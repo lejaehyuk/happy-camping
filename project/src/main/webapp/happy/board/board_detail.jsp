@@ -24,7 +24,7 @@
             </tr>
             <tr>
                 <th width="20%" class="p-3 bg-light">작성자</th>
-                <td width="80%" class="p-3">${board.writer}</td>
+                <td width="80%" class="p-3">${board.mid}</td>
             </tr>
             <tr>
                 <th width="20%" class="p-3 bg-light">작성일</th>
@@ -40,23 +40,27 @@
             </tbody>
         </table>
         <div class="mt-2 d-flex justify-content-start">
-            <div class="me-2">
+ 
+            <c:if test="${sessionScope.mid != board.mid}">
+              <div class="me-2">
                 <a role="button" class="btn btn-secondary" href="/board/list.do">목록</a>
-            </div>
-            <c:if test="${sessionScope.mid == mid}">
-                <div class="me-2">
+              </div>
+            </c:if>
+            <c:if test="${sessionScope.mid == board.mid}">
+                 <div class="me-2">
+                    <a role="button" class="btn btn-secondary" href="/board/list.do">목록</a>
                     <a role="button" class="btn btn-primary" href="/board/update.do?no=${board.bno}">수정</a>
-                </div>
-                <div>
+                 </div>
+                 <div>
                     <c:set var="no" value="${board.bno}"/>
                     <button role="button" class="btn btn-danger" id="board-delete-btn">삭제</button>
-                </div>
-            </c:if>
+                 </div>
+             </c:if>
         </div>
         <!-- 댓글 -->
         <div style="height: 5px"></div>
-  <div class="content three_quarter first">
-  <h2 class="sectiontitle">댓글(${count})</h2>
+  <div class="content three_quarter first m-5">
+  <h3 class="sectiontitle">댓글(${count})</h3>
   <c:if test="${count==0 }">
    <table class="table">
      <tr>
@@ -73,21 +77,22 @@
             <tr>
               <td class="text-left">
                 <c:if test="${board.group_tab>0 }">
-                  <c:forEach var="i" begin="1" end="${board.group_tab }">
-                    &nbsp;&nbsp;
-                  </c:forEach>
                   <img src="image/re_icon.png">
                 </c:if>
-              ◑<span style="color:orange">${board.writer }</span>&nbsp;(${board.dbday })</td>
+              ◑<span style="color:black">${board.mid }</span>&nbsp;(${board.dbday })</td>
               <td class="text-right">
                 <c:if test="${sessionScope.mid!=null }">
-                 <c:if test="${sessionScope.mid==rvo.mid }">
-                  <span class="btn btn-xs btn-success ups" data-no="${board.brno }">수정</span>
-                  <a href="../board/reply_delete.do?brno=${board.brno }&bno=${board.bno }" class="btn btn-xs btn-info">삭제</a>
+                 <c:if test="${sessionScope.mid==board.mid }">
+                  <div class= "d-flex justify-content-end">
+                   <c:set var="brno" value="${board.brno }"/>
+                   <c:set var="bno" value="${board.bno }"/>
+                    <a href="../board/replyDelete.do?brno=${board.brno }&bno=${board.bno}" class="btn btn-outline-dark btn-sm">x</a>
+                    </div>
                  </c:if>
                 </c:if>
               </td>
             </tr>
+            
             <c:if test="${board.content!='관리자가 삭제한 댓글입니다' }">
             <tr>
               <td colspan="2">
@@ -102,30 +107,19 @@
               </td>
             </tr>
             </c:if>
-            <%-- 수정 --%>
-            <tr id="u${rvo.brno }" class="rupdate" style="display:none">
-             <td colspan="2">
-               <form method="post" action="../board/replyupdate.do">
-		         <input type=hidden name="bno" value="${board.bno }">
-		         <input type=hidden name="brno" value="${board.brno }">
-		         <textarea rows="3" cols="90" name="content" style="float: left">${board.content}</textarea>&nbsp;
-		         <input type=submit value="수정" class="btn btn-sm btn-danger" style="height: 65px">
-		        </form>
-             </td>
-            </tr>
           </table>
         </c:forEach>
       </td>
      </tr>
     </table>
   </c:if>
-  <c:if test="${sessionScope.mid!=null }">
+  <c:if test="${sessionScope.role == '일반회원' }">
     <table class="table">
      <tr>
        <td>
         <form method="post" action="../board/replywrite.do">
          <input type=hidden name="bno" value="${board.bno }">
-         <textarea rows="3" cols="90" name="content" style="float: left"></textarea>&nbsp;
+         <textarea rows="3" cols="120" name="content" style="float: left"></textarea>&nbsp;
          <input type=submit value="댓글쓰기" class="btn btn-sm btn-danger" style="height: 65px">
         </form>
        </td>
@@ -146,7 +140,7 @@
                 location.href="/boardDelete.do?no=" + no;
             }
         });
-    });
+
 </script>
 </body>
 </html>

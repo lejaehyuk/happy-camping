@@ -64,7 +64,8 @@ public class BoardModel {
         String title = request.getParameter("title");
         String content = request.getParameter("content");
         String mid = (String) request.getSession().getAttribute("mid");
-        boardDAO.boardWrite(title, content, mid);
+        String writer = (String) request.getSession().getAttribute("name");
+        boardDAO.boardWrite(title, content, writer, mid);
     }
 
     @RequestMapping("boardUpdate.do")
@@ -92,10 +93,8 @@ public class BoardModel {
   	  
   	  String bno=request.getParameter("bno");
   	  String writer=(String)session.getAttribute("name");
-  	  System.out.println(writer);
   	  String mid=(String)request.getSession().getAttribute("mid");
   	  String content=request.getParameter("content");
-  	  System.out.println(content);
   	  BoardReplyVO vo=new BoardReplyVO();
   	  vo.setBno(Integer.parseInt(bno));
   	  vo.setMid(mid);
@@ -137,7 +136,6 @@ public class BoardModel {
   	  vo.setMid(mid);
   	  vo.setWriter(writer);
   	  vo.setContent(content);
-  	  System.out.println(content);
   	  BoardDAO dao=new BoardDAO();
   	  dao.replyReplyWrite(Integer.parseInt(pno), vo);
   	  return "redirect:detail.do?no="+bno;
@@ -145,8 +143,8 @@ public class BoardModel {
     @RequestMapping("board/replyDelete.do")
     public String replyDelete(HttpServletRequest request,HttpServletResponse response)
     {
+    	String bno=request.getParameter("bno");
   	  String brno=request.getParameter("brno");
-  	  String bno=request.getParameter("bno");
   	  BoardDAO dao=new BoardDAO();
   	  dao.replyDelete(Integer.parseInt(brno));
   	  return "redirect:detail.do?no="+bno;

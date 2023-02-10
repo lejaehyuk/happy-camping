@@ -11,5 +11,4 @@
     <bean class="com.sist.model.CampLikeModel"/>
     <bean class="com.sist.model.ItemLikeModel"/>
     <bean class="com.sist.model.OrderModel"/>
-    <bean class="com.sist.model.AdminModel"/>
 </beans>

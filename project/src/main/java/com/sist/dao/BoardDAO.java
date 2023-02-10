@@ -26,9 +26,9 @@ public class BoardDAO {
 
     public Pagination boardList(int curPage) {
         List<BoardVO> items = new ArrayList<>();
-        String pagingQuery = "SELECT bno, title, regdate, writer, hit, num " +
-                "FROM (SELECT bno, title, regdate, writer, hit, ROWNUM AS num " +
-                "FROM (SELECT /*+ INDEX_DESC(HC_BOARD_2 HC_BOARD_BNO_PK) */ bno, title, regdate, writer, hit FROM HC_BOARD_2)) " +
+        String pagingQuery = "SELECT bno, title, regdate, writer, hit, mid , num " +
+                "FROM (SELECT bno, title, regdate, writer, hit, mid , ROWNUM AS num " +
+                "FROM (SELECT /*+ INDEX_DESC(HC_BOARD_2 HC_BOARD_BNO_PK) */ bno, title, regdate, writer, hit , mid FROM HC_BOARD_2)) " +
                 "WHERE num BETWEEN ? AND ?";
         String totalBoardCntQuery = "SELECT COUNT(*) FROM HC_BOARD_2";
         int totalBoardCnt = 0;
@@ -52,6 +52,7 @@ public class BoardDAO {
                 vo.setRegDate(rs.getDate(3));
                 vo.setWriter(rs.getString(4));
                 vo.setHit(rs.getInt(5));
+                vo.setMid(rs.getString(6));
                 items.add(vo);
             }
             rs.close();
@@ -63,14 +64,15 @@ public class BoardDAO {
         return new Pagination(items, curPage, totalBoardCnt , 10);
     }
 
-    public void boardWrite(String title, String content, String writer) {
-        String boardWriteSQL = "INSERT INTO HC_BOARD_2 (bno, title, content, writer) VALUES (HC_BOARD_SEQ.NEXTVAL, ?, ?, ?)";
+    public void boardWrite(String title, String content, String writer, String mid) {
+        String boardWriteSQL = "INSERT INTO HC_BOARD_2 (bno, title, content, writer, mid) VALUES (HC_BOARD_SEQ.NEXTVAL, ?, ?, ? ,?)";
         try {
             conn = dbConn.createConnection();
             ps = conn.prepareStatement(boardWriteSQL);
             ps.setString(1, title);
             ps.setString(2, content);
             ps.setString(3, writer);
+            ps.setString(4, mid);
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -79,7 +81,7 @@ public class BoardDAO {
         }
     }
     public BoardVO boardDetail(int no) {
-        String boardFindQuery = "SELECT bno, title, writer, content, regdate FROM HC_BOARD_2 WHERE bno =?";
+        String boardFindQuery = "SELECT bno, title, writer, content, regdate, mid FROM HC_BOARD_2 WHERE bno =?";
         String boardUpdateQuery = "UPDATE HC_BOARD_2 SET hit = hit + 1 WHERE bno = ?";
         BoardVO vo = new BoardVO();
         try {
@@ -93,6 +95,7 @@ public class BoardDAO {
             vo.setWriter(rs.getString(3));
             vo.setContent(rs.getString(4));
             vo.setRegDate(rs.getDate(5));
+            vo.setMid(rs.getString(6));
             ps = conn.prepareStatement(boardUpdateQuery);
             ps.setInt(1, no);
             ps.executeUpdate();

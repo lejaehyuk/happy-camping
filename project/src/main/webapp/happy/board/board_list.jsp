@@ -41,7 +41,7 @@
                     <td class="p-3 text-start">
                         <a class="text-dark text-underline-hover" href="/board/detail.do?no=${board.bno}">${board.title}</a>
                     </td>
-                    <td class="p-3">${board.writer}</td>
+                    <td class="p-3">${board.mid}</td>
                     <td class="p-3">${board.regDate}</td>
                     <td class="p-3">${board.hit}</td>
                 </tr>
